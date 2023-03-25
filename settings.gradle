@@ -1,0 +1,3 @@
+rootProject.name = 'gradle-multiprojects-test'
+include 'service'
+include 'service-test'

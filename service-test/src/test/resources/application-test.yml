@@ -1,0 +1,23 @@
+spring:
+  main:
+  banner-mode: off
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+      hibernate: ERROR
+
+employee:
+  service:
+    host: http://localhost:1488
+
+server.port: 1488
+
+ivan:
+  test:
+    name: Ivan
+
+clients:
+  externalClient.url: http://localhost:8080/externalClient/
