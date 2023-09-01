@@ -10,8 +10,8 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 @Execution(ExecutionMode.SAME_THREAD)
 public class PutUpdateEmployeeByIdTest extends BaseTest {
 
-    @Test
-    void example() {
-        System.out.println("Hello world!");
-    }
+  @Test
+  void example() {
+    System.out.println("Hello world!");
+  }
 }
