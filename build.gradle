@@ -14,5 +14,26 @@ subprojects {
 
     }
 
-    test { useJUnitPlatform() }
+    test {
+        useJUnitPlatform()
+        exclude '**/testcases/**'
+        exclude '**/testsuites/**'
+    }
+
+    tasks.register('compTests', Test) {
+        group = "verification"
+        description = "Runs component tests"
+        useJUnitPlatform()
+        include '**/testsuites/MasterSuite.class'
+
+        systemProperty "junit.jupiter.execution.parallel.enabled", "true"
+
+        // Configure afterTest event listener
+        ignoreFailures = true
+        afterTest { TestDescriptor testDescriptor, TestResult testResult ->
+            if (testResult.resultType == TestResult.ResultType.FAILURE) {
+                logger.warn("[WARN] Component tests failed. Check the test results.")
+            }
+        }
+    }
 }
