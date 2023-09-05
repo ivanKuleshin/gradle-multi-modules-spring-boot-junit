@@ -9,8 +9,14 @@ subprojects {
 
         implementation 'io.rest-assured:rest-assured:5.3.0'
         implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+
+
+        // LOMBOK Dependencies
         implementation 'org.projectlombok:lombok:1.18.26'
         annotationProcessor 'org.projectlombok:lombok:1.18.26'
+        compileOnly 'org.projectlombok:lombok:1.18.26'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+        testCompileOnly 'org.projectlombok:lombok:1.18.26'
 
     }
 

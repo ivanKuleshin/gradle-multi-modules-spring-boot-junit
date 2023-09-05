@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Gradle Imported" enabled="true">
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
@@ -9,6 +10,8 @@
         </processorPath>
         <module name="gradle-multiprojects-test.service.main" />
         <module name="gradle-multiprojects-test.service-test.main" />
+        <module name="gradle-multiprojects-test.service.test" />
+        <module name="gradle-multiprojects-test.service-test.test" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="17" />

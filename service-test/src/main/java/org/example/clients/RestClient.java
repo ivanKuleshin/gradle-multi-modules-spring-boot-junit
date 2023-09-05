@@ -1,31 +1,27 @@
 package org.example.clients;
 
+import static io.restassured.RestAssured.given;
+import static org.example.utils.JsonUtils.castObjectToJsonString;
+
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.Objects;
-
-import static io.restassured.RestAssured.given;
-import static org.example.utils.JsonUtils.castObjectToJsonString;
-
 @Slf4j
 @Component
-@Profile("component-test | api-test")
+@Profile("test")
 public class RestClient {
+
+    @Value("${employee.service.host}")
+    public String baseUrl;
 
     private static final ThreadLocal<RestClient> instance = new ThreadLocal<>();
     private RequestSpecification requestSpecification;
-
-    @Value("${default.jwtToken}:invalidToken")
-    protected String jwtToken;
-    private static String pingToken;
 
     private static final String LOG_MESSAGE_ALL_PARAMS = "[{}] request was sent for URI: {}\nWith path params:\n{}\nAnd url params:\n{}";
     private static final String LOG_MESSAGE_WITHOUT_PARAMS = "[{}] request was sent for URI: {}";
@@ -33,6 +29,10 @@ public class RestClient {
 
     private RestClient() {
         initializeSpecifications();
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
     }
 
     public static RestClient getInstance() {
@@ -58,12 +58,8 @@ public class RestClient {
     }
 
     public Response sendRequestWithBody(Method method, String url, Map<String, ?> urlParams, Object requestBody) {
-        if (MapUtils.isNotEmpty(urlParams)) {
-            requestSpecification.queryParams(urlParams);
-        }
-        if (Objects.nonNull(requestBody)) {
-            requestSpecification.body(requestBody);
-        }
+        requestSpecification.queryParams(urlParams);
+        requestSpecification.body(requestBody);
 
         log.info(LOG_MESSAGE_REQUEST_BODY, method.toString(), url, urlParams, castObjectToJsonString(requestBody));
         return sendRequestForHttpMethod(method, url, requestSpecification);
@@ -80,6 +76,11 @@ public class RestClient {
 
     public RestClient initializeSpecifications() {
         requestSpecification = given();
+        return this;
+    }
+
+    public RestClient setHeader(String name, String value) {
+        requestSpecification.header(name, value);
         return this;
     }
 }

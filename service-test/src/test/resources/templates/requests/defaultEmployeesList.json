@@ -1,0 +1,132 @@
+[
+  {
+    "id": 1,
+    "name": "Alice Smith",
+    "passportNumber": "AB123001",
+    "education": "Bachelor's Degree",
+    "address": {
+      "street": "123 Main Street",
+      "city": "Anytown",
+      "state": "CA",
+      "zipcode": "12345"
+    },
+    "employeeHash": "e1f7b8c9d1"
+  },
+  {
+    "id": 2,
+    "name": "Bob Johnson",
+    "passportNumber": "CD456002",
+    "education": "Master's Degree",
+    "address": {
+      "street": "456 Elm Street",
+      "city": "Smallville",
+      "state": "NY",
+      "zipcode": "54321"
+    },
+    "employeeHash": "e2f7b8c9d2"
+  },
+  {
+    "id": 3,
+    "name": "Charlie Brown",
+    "passportNumber": "EF789003",
+    "education": "High School Diploma",
+    "address": {
+      "street": "789 Oak Avenue",
+      "city": "Villageville",
+      "state": "TX",
+      "zipcode": "67890"
+    },
+    "employeeHash": "e3f7b8c9d3"
+  },
+  {
+    "id": 4,
+    "name": "David Lee",
+    "passportNumber": "GH101004",
+    "education": "Ph.D. in Computer Science",
+    "address": {
+      "street": "101 Pine Road",
+      "city": "Techtown",
+      "state": "CA",
+      "zipcode": "98765"
+    },
+    "employeeHash": "e4f7b8c9d4"
+  },
+  {
+    "id": 5,
+    "name": "Eva White",
+    "passportNumber": "IJ121005",
+    "education": "Bachelor's Degree",
+    "address": {
+      "street": "121 Cedar Lane",
+      "city": "Growthville",
+      "state": "OR",
+      "zipcode": "13579"
+    },
+    "employeeHash": "e5f7b8c9d5"
+  },
+  {
+    "id": 6,
+    "name": "Frank Miller",
+    "passportNumber": "KL131006",
+    "education": "Master's Degree",
+    "address": {
+      "street": "131 Redwood Avenue",
+      "city": "Metropolis",
+      "state": "IL",
+      "zipcode": "24680"
+    },
+    "employeeHash": "e6f7b8c9d6"
+  },
+  {
+    "id": 7,
+    "name": "Grace Davis",
+    "passportNumber": "MN141007",
+    "education": "Bachelor's Degree",
+    "address": {
+      "street": "141 Oak Street",
+      "city": "Greenville",
+      "state": "SC",
+      "zipcode": "86420"
+    },
+    "employeeHash": "e7f7b8c9d7"
+  },
+  {
+    "id": 8,
+    "name": "Henry Clark",
+    "passportNumber": "OP151008",
+    "education": "Master's Degree",
+    "address": {
+      "street": "151 Maple Avenue",
+      "city": "Hometown",
+      "state": "MO",
+      "zipcode": "36912"
+    },
+    "employeeHash": "e8f7b8c9d8"
+  },
+  {
+    "id": 9,
+    "name": "Ivy Turner",
+    "passportNumber": "QR161009",
+    "education": "Bachelor's Degree",
+    "address": {
+      "street": "161 Birch Road",
+      "city": "Sunnyville",
+      "state": "FL",
+      "zipcode": "75319"
+    },
+    "employeeHash": "e9f7b8c9d9"
+  },
+  {
+    "id": 10,
+    "name": "Jack Brown",
+    "passportNumber": "ST171010",
+    "education": "High School Diploma",
+    "address": {
+      "street": "171 Pine Lane",
+      "city": "Woodsville",
+      "state": "NH",
+      "zipcode": "54321"
+    },
+    "employeeHash": "e10f7b8c9d10"
+  }
+]

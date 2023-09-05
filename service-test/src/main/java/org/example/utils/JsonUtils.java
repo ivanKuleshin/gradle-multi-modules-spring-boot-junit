@@ -40,9 +40,9 @@ public final class JsonUtils {
         OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public static String readJsonFile(Path filePath) {
+    public static String readJsonFile(String filePath) {
         try {
-            return Files.readString(filePath);
+            return Files.readString(Path.of(filePath));
         } catch (IOException ioException) {
             throw new TestExecutionException(JSON_ERROR_MESSAGE, ioException.getMessage());
         }
