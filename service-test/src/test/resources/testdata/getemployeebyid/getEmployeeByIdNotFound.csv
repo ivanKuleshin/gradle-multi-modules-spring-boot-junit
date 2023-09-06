@@ -1,2 +1,2 @@
-ignoredDescription  | employeeId | employeeHashValue     |
-invalid employee ID | 123        | employeeHashValueTest |
+ignoredDescription  | employeeId | employeeHashValue     | errorMessage                          |
+invalid employee ID | 123        | employeeHashValueTest | Employee with such id = %s not found  |

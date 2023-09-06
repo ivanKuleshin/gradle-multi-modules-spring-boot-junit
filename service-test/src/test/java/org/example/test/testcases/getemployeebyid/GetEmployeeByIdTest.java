@@ -43,9 +43,7 @@ public class GetEmployeeByIdTest extends BaseTest {
     expectedEmployee.setEmployeeHash(employeeId + employeeHashValue);
 
     // When
-    Response response = RestClient.getInstance()
-        .initializeSpecifications()
-        .sendRequestWithoutParams(Method.GET, baseUrl + PropertiesReader.getInstance().getEmployeeBasePath() + SLASH_DELIMITER + employeeId);
+    Response response = sendGetRequestToGetEmployee(employeeId);
 
     // Then
     wireMockClient.verifyMapping(RequestTypes.GET, externalClientPath + employeeId, externalClientRequestCount);
@@ -55,16 +53,16 @@ public class GetEmployeeByIdTest extends BaseTest {
 
   @ParameterizedTest(name = "[{index}] {0}")
   @CsvFileSource(resources = TEST_DATA_PATH + "getEmployeeByIdNotFound.csv", numLinesToSkip = 1, delimiter = PIPE_DELIMITER)
-  void getEmployeeByIdNotFound(String ignoredDescription, String employeeId, String employeeHashValue) {
+  void getEmployeeByIdNotFound(String ignoredDescription, String employeeId, String employeeHashValue, String errorMessage) {
     // Given
     wireMockClient.publishGetMapping(externalClientPath + employeeId, Map.of(EMPLOYEE_HASH_VALUE_FIELD, employeeHashValue));
 
     // When
-    Response response = RestClient.getInstance()
-        .initializeSpecifications()
-        .sendRequestWithoutParams(Method.GET, baseUrl + PropertiesReader.getInstance().getEmployeeBasePath() + SLASH_DELIMITER + employeeId);
+    Response response = sendGetRequestToGetEmployee(employeeId);
 
+    // Then
     assertThat(response.statusCode()).as(response.asPrettyString()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    assertThat(response.jsonPath().getString(MESSAGE_FIELD)).as(response.asPrettyString()).isEqualTo(String.format(errorMessage, employeeId));
   }
 
   @ParameterizedTest(name = "[{index}] {0}")
@@ -74,12 +72,17 @@ public class GetEmployeeByIdTest extends BaseTest {
     wireMockClient.publishErrorMapping(RequestTypes.GET, externalClientPath + employeeId, HttpStatus.INTERNAL_SERVER_ERROR);
 
     // When
-    Response response = RestClient.getInstance()
-        .initializeSpecifications()
-        .sendRequestWithoutParams(Method.GET, baseUrl + PropertiesReader.getInstance().getEmployeeBasePath() + SLASH_DELIMITER + employeeId);
+    Response response = sendGetRequestToGetEmployee(employeeId);
 
+    // Then
     assertThat(response.statusCode()).as(response.asPrettyString()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE.value());
     assertThat(response.jsonPath().getString(MESSAGE_FIELD)).as(response.asPrettyString()).isEqualTo(errorMessage);
+  }
+
+  private Response sendGetRequestToGetEmployee(Object employeeId) {
+    return RestClient.getInstance()
+        .initializeSpecifications()
+        .sendRequestWithoutParams(Method.GET, baseUrl + PropertiesReader.getInstance().getEmployeeBasePath() + SLASH_DELIMITER + employeeId);
   }
 
 }

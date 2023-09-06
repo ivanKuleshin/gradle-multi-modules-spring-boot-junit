@@ -1,4 +1,4 @@
-package org.example.test.testcases.getemployeebyid;
+package org.example.test.testcases.addemployee;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,10 +33,7 @@ public class PutAddEmployeeByIdTest extends BaseTest {
                                @ConvertWith(JsonFileConverter.class) Employee employee,
                                String successfulMessage) {
     // When
-    Response response = RestClient.getInstance()
-        .initializeSpecifications()
-        .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        .sendRequestWithBody(Method.PUT, baseUrl + PropertiesReader.getInstance().getEmployeeBasePath(), Collections.emptyMap(), employee);
+    Response response = sendPutRequestToAddEmployee(employee);
 
     // Then
     assertThat(response.statusCode()).as(response.asPrettyString()).isEqualTo(HttpStatus.OK.value());
@@ -52,12 +49,17 @@ public class PutAddEmployeeByIdTest extends BaseTest {
     employee.setId(null);
 
     // When
-    Response response = RestClient.getInstance()
+    Response response = sendPutRequestToAddEmployee(employee);
+
+    // Then
+    assertThat(response.statusCode()).as(response.asPrettyString()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    assertThat(response.jsonPath().getString(MESSAGE_FIELD)).as(response.asPrettyString()).isEqualTo(errorMessage);
+  }
+
+  private Response sendPutRequestToAddEmployee(Employee employee) {
+    return RestClient.getInstance()
         .initializeSpecifications()
         .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .sendRequestWithBody(Method.PUT, baseUrl + PropertiesReader.getInstance().getEmployeeBasePath(), Collections.emptyMap(), employee);
-
-    assertThat(response.statusCode()).as(response.asPrettyString()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    assertThat(response.jsonPath().getString(MESSAGE_FIELD)).as(response.asPrettyString()).isEqualTo(errorMessage);
   }
 }
