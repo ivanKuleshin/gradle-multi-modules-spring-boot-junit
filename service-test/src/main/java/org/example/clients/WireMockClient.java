@@ -17,7 +17,7 @@ import static org.example.utils.JsonUtils.castObjectToJsonString;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.apache.commons.lang3.StringUtils;
-import org.example.commonenums.RequestTypes;
+import org.example.enums.RequestTypes;
 import org.example.exceptions.TestExecutionException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

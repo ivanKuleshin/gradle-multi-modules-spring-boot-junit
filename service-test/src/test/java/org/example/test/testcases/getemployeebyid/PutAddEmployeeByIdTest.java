@@ -9,6 +9,7 @@ import java.util.Collections;
 import org.example.clients.RestClient;
 import org.example.model.Employee;
 import org.example.test.testcases.BaseTest;
+import org.example.utils.PropertiesReader;
 import org.example.utils.testdataconverters.JsonFileConverter;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -31,17 +32,16 @@ public class PutAddEmployeeByIdTest extends BaseTest {
     System.out.println("Hello world!");
   }
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "[{index}] {0}")
   @CsvFileSource(resources = TEST_DATA_PATH + "addEmployeePositiveTest.csv", numLinesToSkip = 1, delimiter = PIPE_DELIMITER)
-  void addEmployeePositiveTest(@ConvertWith(JsonFileConverter.class) Employee employee) {
-    // Given
-    String successfulMessage = "Employee with id = %s has been added!";
-
+  void addEmployeePositiveTest(String ignoredDescription,
+                               @ConvertWith(JsonFileConverter.class) Employee employee,
+                               String successfulMessage) {
     // When
     Response response = RestClient.getInstance()
         .initializeSpecifications()
         .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        .sendRequestWithBody(Method.PUT, baseUrl + "/employee", Collections.emptyMap(), employee);
+        .sendRequestWithBody(Method.PUT, baseUrl + PropertiesReader.getInstance().getEmployeeBasePath(), Collections.emptyMap(), employee);
 
     // Then
     assertThat(response.statusCode()).as(response.asPrettyString()).isEqualTo(HttpStatus.OK.value());

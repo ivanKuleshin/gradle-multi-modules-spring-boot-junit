@@ -35,7 +35,15 @@ public class PropertiesReader {
   }
 
   public String getBaseUrl() {
-      return getProperty("employee.service.host");
+    return getProperty("employee.service.host");
+  }
+
+  public String getEmployeeBasePath() {
+    return getProperty("base.employee.path");
+  }
+
+  public String getAddEmployeeListPath() {
+    return getProperty("employee.add.list");
   }
 
   private void initializeProperties() {

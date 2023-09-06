@@ -12,6 +12,7 @@
     </list>
     <writeAnnotations>
       <writeAnnotation name="org.springframework.beans.factory.annotation.Autowired" />
+      <writeAnnotation name="org.springframework.beans.factory.annotation.Value" />
     </writeAnnotations>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />

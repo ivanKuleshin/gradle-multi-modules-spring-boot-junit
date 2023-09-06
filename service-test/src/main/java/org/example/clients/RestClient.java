@@ -8,7 +8,6 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +15,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("test")
 public class RestClient {
-
-    @Value("${employee.service.host}")
-    public String baseUrl;
 
     private static final ThreadLocal<RestClient> instance = new ThreadLocal<>();
     private RequestSpecification requestSpecification;
@@ -29,10 +25,6 @@ public class RestClient {
 
     private RestClient() {
         initializeSpecifications();
-    }
-
-    public String getBaseUrl() {
-        return baseUrl;
     }
 
     public static RestClient getInstance() {

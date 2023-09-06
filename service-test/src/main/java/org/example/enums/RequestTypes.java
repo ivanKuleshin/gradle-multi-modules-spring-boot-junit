@@ -1,4 +1,4 @@
-package org.example.commonenums;
+package org.example.enums;
 
 public enum RequestTypes {
     GET("GET"),

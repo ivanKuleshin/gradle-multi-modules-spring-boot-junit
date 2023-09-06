@@ -1,2 +1,2 @@
-employeeObject             |
-requestEmployeeObject.json |
+ignoredDescription | employeeObject             | successfulMessage                     |
+positive case      | requestEmployeeObject.json | Employee with id = %s has been added! |

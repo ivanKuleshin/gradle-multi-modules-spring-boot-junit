@@ -1,5 +1,7 @@
 package org.example.test.testcases;
 
+import static org.example.utils.JsonUtils.readJsonFileAsObject;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
@@ -15,6 +17,7 @@ import org.example.utils.JsonUtils;
 import org.example.utils.PropertiesReader;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,15 +25,17 @@ import org.springframework.http.MediaType;
 
 @Slf4j
 public class BaseTest extends ContextLoader {
+  private static final String DEFAULT_EMPLOYEES_JSON_PATH = "src/test/resources/templates/requests/defaultEmployeesList.json";
 
   @Value("${employee.service.host}")
   protected String baseUrl;
 
+  @Autowired
+  protected WireMockClient wireMockClient;
+
   protected static final char PIPE_DELIMITER = '|';
-
-  private static final String DEFAULT_EMPLOYEES_JSON_PATH = "src/test/resources/templates/requests/defaultEmployeesList.json";
-
-  protected static final List<Employee> defaultEmployeesList = JsonUtils.readJsonFileAsObject(DEFAULT_EMPLOYEES_JSON_PATH, new TypeReference<>() {});
+  protected static final char SLASH_DELIMITER = '/';
+  protected static final List<Employee> defaultEmployeesList = readJsonFileAsObject(DEFAULT_EMPLOYEES_JSON_PATH, new TypeReference<>() {});
 
   @BeforeEach
   void setUp() {
@@ -45,7 +50,11 @@ public class BaseTest extends ContextLoader {
   private static void createDefaultEmployees() {
     Response response = RestClient.getInstance().initializeSpecifications()
         .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        .sendRequestWithBody(Method.PUT, PropertiesReader.getInstance().getBaseUrl() + "/employee/list", Collections.emptyMap(), defaultEmployeesList);
+        .sendRequestWithBody(
+            Method.PUT,
+            PropertiesReader.getInstance().getBaseUrl() + PropertiesReader.getInstance().getAddEmployeeListPath(),
+            Collections.emptyMap(),
+            defaultEmployeesList);
 
     if (response.statusCode() != HttpStatus.OK.value()) {
       throw new TestExecutionException("Default Employee list was not created! Cause: %s", response.asPrettyString());
