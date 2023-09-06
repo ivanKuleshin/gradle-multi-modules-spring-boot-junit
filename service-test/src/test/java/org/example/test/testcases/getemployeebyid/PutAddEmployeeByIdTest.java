@@ -2,6 +2,7 @@ package org.example.test.testcases.getemployeebyid;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.example.constants.CommonConstants.MESSAGE_FIELD;
 
 import io.restassured.http.Method;
 import io.restassured.response.Response;
@@ -12,7 +13,6 @@ import org.example.test.testcases.BaseTest;
 import org.example.utils.PropertiesReader;
 import org.example.utils.testdataconverters.JsonFileConverter;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,11 +26,6 @@ import org.springframework.http.MediaType;
 @Execution(ExecutionMode.SAME_THREAD)
 public class PutAddEmployeeByIdTest extends BaseTest {
   private static final String TEST_DATA_PATH = "/testdata/addemployee/";
-
-  @Test
-  void example() {
-    System.out.println("Hello world!");
-  }
 
   @ParameterizedTest(name = "[{index}] {0}")
   @CsvFileSource(resources = TEST_DATA_PATH + "addEmployeePositiveTest.csv", numLinesToSkip = 1, delimiter = PIPE_DELIMITER)
@@ -46,5 +41,23 @@ public class PutAddEmployeeByIdTest extends BaseTest {
     // Then
     assertThat(response.statusCode()).as(response.asPrettyString()).isEqualTo(HttpStatus.OK.value());
     assertThat(response.asString()).contains(format(successfulMessage, employee.getId()));
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @CsvFileSource(resources = TEST_DATA_PATH + "addEmployeeNegativeCase.csv", numLinesToSkip = 1, delimiter = PIPE_DELIMITER)
+  void addEmployeeNegativeCase(String ignoredDescription,
+                               @ConvertWith(JsonFileConverter.class) Employee employee,
+                               String errorMessage) {
+    // Given
+    employee.setId(null);
+
+    // When
+    Response response = RestClient.getInstance()
+        .initializeSpecifications()
+        .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        .sendRequestWithBody(Method.PUT, baseUrl + PropertiesReader.getInstance().getEmployeeBasePath(), Collections.emptyMap(), employee);
+
+    assertThat(response.statusCode()).as(response.asPrettyString()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    assertThat(response.jsonPath().getString(MESSAGE_FIELD)).as(response.asPrettyString()).isEqualTo(errorMessage);
   }
 }

@@ -1,6 +1,8 @@
 package org.example.service;
 
+import org.example.exception.BadRequestException;
 import org.example.exception.CustomRuntimeException;
+import org.example.exception.NotFoundException;
 import org.example.model.Employee;
 import org.springframework.stereotype.Service;
 
@@ -41,10 +43,9 @@ public class EmployeeService {
 
     public void add(Employee employee) {
         if (isNull(employee) || isNull(employee.getId())) {
-            throw new CustomRuntimeException("Employee cannot be null");
+            throw new BadRequestException("Employee cannot be null");
         } else if (employeeMap.containsKey(employee.getId())) {
-            throw new CustomRuntimeException(String
-                    .format("Employee with such id = %s already exists", employee.getId()));
+            throw new BadRequestException(String.format("Employee with such id = %s already exists", employee.getId()));
         } else {
             employeeMap.put(employee.getId(), employee);
         }
@@ -79,7 +80,7 @@ public class EmployeeService {
         if (isNull(id)) {
             throw new CustomRuntimeException("id cannot be null");
         } else if (!employeeMap.containsKey(id)) {
-            throw new CustomRuntimeException(String
+            throw new NotFoundException(String
                     .format("Employee with such id = %s not found", id));
         }
     }
