@@ -3,10 +3,10 @@ package org.example.test.testcases.getemployeebyid;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.example.constants.CommonConstants.MESSAGE_FIELD;
 import static org.example.constants.EmployeeFields.EMPLOYEE_HASH_VALUE_FIELD;
+import static org.example.utils.AssertionUtils.verifyStatusCode;
 
 import io.restassured.http.Method;
 import io.restassured.response.Response;
-import java.security.SecureRandom;
 import java.util.Map;
 import org.apache.commons.collections4.IterableUtils;
 import org.example.clients.RestClient;
@@ -26,7 +26,6 @@ import org.springframework.http.HttpStatus;
 @Execution(ExecutionMode.CONCURRENT)
 public class GetEmployeeByIdTest extends BaseTest {
   private static final String TEST_DATA_PATH = "/testdata/getemployeebyid/";
-  private static final int START_INDEX = 0;
 
   @Value("${clients.externalClient.path}")
   private String externalClientPath;
@@ -35,7 +34,7 @@ public class GetEmployeeByIdTest extends BaseTest {
   @CsvFileSource(resources = TEST_DATA_PATH + "getEmployeeByIdPositiveCase.csv", numLinesToSkip = 1, delimiter = PIPE_DELIMITER)
   void getEmployeeByIdPositiveCase(String ignoredDescription, String employeeHashValue, int externalClientRequestCount) {
     // Given
-    Integer employeeId = defaultEmployeesList.get(new SecureRandom().nextInt(START_INDEX, defaultEmployeesList.size())).getId();
+    Integer employeeId = getRandomEmployeeFromDefaultList().getId();
 
     wireMockClient.publishGetMapping(externalClientPath + employeeId, Map.of(EMPLOYEE_HASH_VALUE_FIELD, employeeHashValue));
 
@@ -46,8 +45,9 @@ public class GetEmployeeByIdTest extends BaseTest {
     Response response = sendGetRequestToGetEmployee(employeeId);
 
     // Then
+    verifyStatusCode(response, HttpStatus.OK.value());
+
     wireMockClient.verifyMapping(RequestTypes.GET, externalClientPath + employeeId, externalClientRequestCount);
-    assertThat(response.statusCode()).as(response.asPrettyString()).isEqualTo(HttpStatus.OK.value());
     assertThat(response.as(Employee.class)).isEqualTo(expectedEmployee);
   }
 
@@ -61,7 +61,7 @@ public class GetEmployeeByIdTest extends BaseTest {
     Response response = sendGetRequestToGetEmployee(employeeId);
 
     // Then
-    assertThat(response.statusCode()).as(response.asPrettyString()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    verifyStatusCode(response, HttpStatus.NOT_FOUND.value());
     assertThat(response.jsonPath().getString(MESSAGE_FIELD)).as(response.asPrettyString()).isEqualTo(String.format(errorMessage, employeeId));
   }
 
@@ -75,7 +75,7 @@ public class GetEmployeeByIdTest extends BaseTest {
     Response response = sendGetRequestToGetEmployee(employeeId);
 
     // Then
-    assertThat(response.statusCode()).as(response.asPrettyString()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE.value());
+    verifyStatusCode(response, HttpStatus.SERVICE_UNAVAILABLE.value());
     assertThat(response.jsonPath().getString(MESSAGE_FIELD)).as(response.asPrettyString()).isEqualTo(errorMessage);
   }
 

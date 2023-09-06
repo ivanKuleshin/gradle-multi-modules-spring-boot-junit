@@ -3,6 +3,7 @@ package org.example.test.testcases.addemployee;
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.example.constants.CommonConstants.MESSAGE_FIELD;
+import static org.example.utils.AssertionUtils.verifyStatusCode;
 
 import io.restassured.http.Method;
 import io.restassured.response.Response;
@@ -32,10 +33,14 @@ public class PutAddEmployeeByIdTest extends BaseTest {
   void addEmployeePositiveTest(String ignoredDescription,
                                @ConvertWith(JsonFileConverter.class) Employee employee,
                                String successfulMessage) {
+    // Given
+    mockitoClient.prepareTrueMockForNoRestClient();
+
     // When
     Response response = sendPutRequestToAddEmployee(employee);
 
     // Then
+    mockitoClient.verifyMockForNoRestClient(employee);
     assertThat(response.statusCode()).as(response.asPrettyString()).isEqualTo(HttpStatus.OK.value());
     assertThat(response.asString()).contains(format(successfulMessage, employee.getId()));
   }
@@ -44,15 +49,60 @@ public class PutAddEmployeeByIdTest extends BaseTest {
   @CsvFileSource(resources = TEST_DATA_PATH + "addEmployeeNegativeCase.csv", numLinesToSkip = 1, delimiter = PIPE_DELIMITER)
   void addEmployeeNegativeCase(String ignoredDescription,
                                @ConvertWith(JsonFileConverter.class) Employee employee,
-                               String errorMessage) {
+                               String errorMessage,
+                               Integer noRestClientInteractions) {
     // Given
+    mockitoClient.prepareTrueMockForNoRestClient();
     employee.setId(null);
 
     // When
     Response response = sendPutRequestToAddEmployee(employee);
 
     // Then
-    assertThat(response.statusCode()).as(response.asPrettyString()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    verifyStatusCode(response, HttpStatus.BAD_REQUEST.value());
+
+    mockitoClient.verifyNoRestClientMockInteractions(noRestClientInteractions);
+    assertThat(response.jsonPath().getString(MESSAGE_FIELD)).as(response.asPrettyString()).isEqualTo(errorMessage);
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @CsvFileSource(resources = TEST_DATA_PATH + "addEmployeeWasNotAddedToExternalDb.csv", numLinesToSkip = 1, delimiter = PIPE_DELIMITER)
+  void addEmployeeWasNotAddedToExternalDb(String ignoredDescription,
+                                          @ConvertWith(JsonFileConverter.class) Employee employee,
+                                          Integer employeeId,
+                                          String errorMessage) {
+    // Given
+    employee.setId(employeeId);
+    mockitoClient.prepareFalseMockForNoRestClient();
+
+    // When
+    Response response = sendPutRequestToAddEmployee(employee);
+
+    // Then
+    verifyStatusCode(response, HttpStatus.SERVICE_UNAVAILABLE.value());
+
+    mockitoClient.verifyMockForNoRestClient(employee);
+    assertThat(response.jsonPath().getString(MESSAGE_FIELD)).as(response.asPrettyString()).isEqualTo(errorMessage);
+  }
+
+  @ParameterizedTest(name = "[{index}] {0}")
+  @CsvFileSource(resources = TEST_DATA_PATH + "addEmployeeNoRestClientException.csv", numLinesToSkip = 1, delimiter = PIPE_DELIMITER)
+  void addEmployeeNoRestClientException(String ignoredDescription,
+                                        @ConvertWith(JsonFileConverter.class) Employee employee,
+                                        Integer employeeId,
+                                        String mockErrorMessage,
+                                        String errorMessage) {
+    // Given
+    employee.setId(employeeId);
+    mockitoClient.prepareMockWithExceptionForNoRestClient(mockErrorMessage);
+
+    // When
+    Response response = sendPutRequestToAddEmployee(employee);
+
+    // Then
+    verifyStatusCode(response, HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+    mockitoClient.verifyMockForNoRestClient(employee);
     assertThat(response.jsonPath().getString(MESSAGE_FIELD)).as(response.asPrettyString()).isEqualTo(errorMessage);
   }
 
