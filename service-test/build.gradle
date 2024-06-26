@@ -21,10 +21,15 @@ dependencies {
     implementation 'org.junit.vintage:junit-vintage-engine:5.9.2'
 
     implementation 'org.assertj:assertj-core:3.24.2'
-    implementation 'org.springframework.cloud:spring-cloud-contract-wiremock:4.0.1'
-    implementation 'com.github.tomakehurst:wiremock-jre8:2.35.1'
+    implementation 'org.springframework.cloud:spring-cloud-contract-wiremock:4.1.3'
+    implementation ('org.wiremock:wiremock:3.7.0') {
+        exclude group: 'commons-fileupload', module: 'commons-fileupload'
+    }
     testImplementation "org.junit.platform:junit-platform-suite-engine:1.9.2"
     implementation 'org.apache.commons:commons-collections4:4.4'
+
+    // replace with the safe version
+    implementation 'commons-fileupload:commons-fileupload:1.5'
 }
 
 test {
