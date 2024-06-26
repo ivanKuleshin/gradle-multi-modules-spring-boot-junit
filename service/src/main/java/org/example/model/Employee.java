@@ -29,10 +29,16 @@ public class Employee implements Comparable<Employee> {
         this.passportNumber = passportNumber;
         this.education = education;
         this.address = address;
+        this.employeeHash = generateEmployeeHash();
     }
 
     @Override
     public int compareTo(Employee employee) {
         return this.id.compareTo(employee.id);
     }
+
+    public String generateEmployeeHash() {
+        return id + "_" + name;
+    }
+
 }

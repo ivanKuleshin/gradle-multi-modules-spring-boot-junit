@@ -10,6 +10,7 @@ subprojects {
         implementation 'io.rest-assured:rest-assured:5.3.0'
         implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 
+        implementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
 
         // LOMBOK Dependencies
         implementation 'org.projectlombok:lombok:1.18.26'
